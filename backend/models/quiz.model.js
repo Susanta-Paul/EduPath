@@ -19,7 +19,7 @@ const quizSchema= new mongoose.Schema({
             required: true
         },
         answer: {
-            type: Number,
+            type: Number, // idx of the correct option
             required: true,
             validate: {
                 validator: function (val) {
@@ -37,6 +37,11 @@ const quizSchema= new mongoose.Schema({
             }
         }
     }],
+    course: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Course",
+        required: true
+    }, 
     createdAt: {
         type: Date,
         default: Date.now

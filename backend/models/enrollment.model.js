@@ -33,12 +33,15 @@ const enrollmentSchema= new mongoose.Schema({
             ref: "Video", 
         }
     ],
-    completedQuizIds: [
-        { 
+    completedQuizzes: [{
+        Quiz:{ 
             type: mongoose.Schema.Types.ObjectId,
             ref: "Quiz", 
-        }
-    ],
+        },
+        total: {type: Number, required: true},
+        score: {type: Number, required: true},
+        createdAt: {type: Date, default: Date.now}
+    }],
 })
 
 const enrollmentModel= mongoose.model("Enrollment", enrollmentSchema)

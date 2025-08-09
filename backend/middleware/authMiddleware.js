@@ -31,3 +31,16 @@ export const verifyJWT= async (req, res, next)=>{
     }
 
 }
+
+export const verifyStudent= async (req, res, next)=>{
+    try {
+        if(req.user.role !== "Student"){
+            return res.status(403).json({messsage: "Only Students are Authorized to access this route"})
+        }
+
+        next()
+
+    } catch (error) {
+        res.status(500).json({errors: error})
+    }
+}

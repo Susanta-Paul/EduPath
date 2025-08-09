@@ -1,5 +1,8 @@
 import express from "express"
-import {userRegisterController, userLoginController, userLogoutController} from "../controllers/user.controller.js"
+import {
+    userRegisterController, userLoginController, userLogoutController,
+    userprofileController, userRenewTokenController, userCourseController
+} from "../controllers/user.controller.js"
 import {body} from "express-validator"
 import {verifyJWT} from "../middleware/authMiddleware.js"
 
@@ -25,7 +28,9 @@ userRouter.get("/signout", verifyJWT, userLogoutController)
 
 userRouter.get("/renewrefreshtoken", userRenewTokenController)
 
-userRouter.get("/profile")
+userRouter.get("/profile", verifyJWT, userprofileController)
+
+userRouter.get("/allcourses", verifyJWT, userCourseController)
 
 
 

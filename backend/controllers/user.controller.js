@@ -1,4 +1,5 @@
 import userModel from "../models/user.model.js"
+import courseModel from "../models/course.models.js"
 import {validationResult} from "express-validator"
 import {userCreateService} from "../service/user.service.js"
 import jwt from "jsonwebtoken"
@@ -29,7 +30,7 @@ export const userRegisterController= async (req, res, next)=>{
 
         res.cookie("accessToken", accessToken, options)
         res.cookie("refreshToken", refreshToken, options)
-        res.status(201).json({message: "User Successfully Created", accessToken, refreshToken, safeUser})
+        res.status(201).json({message: "User Successfully Created", accessToken, refreshToken, user: safeUser})
 
     } catch (error) {
         const status=error.statusCode || 500
@@ -67,7 +68,7 @@ export const userLoginController= async (req, res, next)=>{
 
         res.cookie("accessToken", accessToken, options)
         res.cookie("refreshToken", refreshToken, options)
-        res.status(200).json({message: "User LoggedIn Successfully ", accessToken, refreshToken, safeUser})
+        res.status(200).json({message: "User LoggedIn Successfully ", accessToken, refreshToken, user: safeUser})
 
     } catch (error) {
         res.status(500).json({errors: error})
@@ -135,3 +136,23 @@ export const userRenewTokenController= async (req, res, next)=>{
     }
 
 }
+
+export const userprofileController= async (req, res, next)=>{
+    res.status(200).json({user: req.user})
+}
+
+export const userCourseController= async (req, res, next)=>{
+    
+    try {
+        // populate, go to the reference obj of the ids in the instructor feild and fetch the
+        // fullname and use name and put here instead of the _ids
+        
+        const allCourses= await courseModel.find().populate("instructors", "fullname username")
+
+        res.status(200).json({allCourses: allCourses})
+
+    } catch (error) {
+        res.status(500).json({errors: error})
+    }
+}
+

@@ -4,6 +4,7 @@ import dotenv  from "dotenv"
 import connectDb from "./db/db.js"
 import userRouter from "./routes/User.routes.js"
 import cookieParser from "cookie-parser"
+import studentRouter from "./routes/student.route.js"
 
 const app=express()
 const server=createServer(app)
@@ -17,6 +18,7 @@ app.use(express.urlencoded({extended: true}))
 
 // routes
 app.use("/user", userRouter)
+app.use("/student", studentRouter)
 
 
 server.listen(process.env.PORT, ()=>{
