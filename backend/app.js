@@ -3,11 +3,14 @@ import {createServer} from "http"
 import dotenv  from "dotenv"
 import connectDb from "./db/db.js"
 import userRouter from "./routes/User.routes.js"
+import cookieParser from "cookie-parser"
 
 const app=express()
 const server=createServer(app)
 dotenv.config({override: true})
 connectDb()
+
+app.use(cookieParser())
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
