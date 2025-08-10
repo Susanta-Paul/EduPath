@@ -1,6 +1,7 @@
 import {validationResult} from "express-validator"
 import courseModel from "../models/course.models.js"
 import {createCourseService, createNewVideoService} from "../service/instructor.service.js"
+import videoModel from "../models/video.model.js"
 
 
 export const instructorGetCourseController= async (req, res, next)=>{
@@ -18,7 +19,9 @@ export const instructorGetCourseController= async (req, res, next)=>{
             return res.status(404).json({message: "No course Found"})
         }
 
-        res.status(200).json({enroll: false, message:"Successfully get the course", course})
+        const allCourseVideos= await videoModel.find({course: courseId}).select(["title, order"])
+
+        res.status(200).json({enroll: false, message:"Successfully get the course", course, allVideos: allCourseVideos})
 
     } catch (error) {
         res.status(500).json({errors: error})
@@ -73,7 +76,7 @@ export const instructorUploadVideoController= async (req, res, next)=>{
         const {title, course, order}=req.body
         const videoFile= req.file // because we are storing the file in buffer memory
 
-        const newVideo= await createNewVideoService({title, courseId:course, order, videoFile})
+        const newVideo= await createNewVideoService({title, courseId:course, order, videoFile, userId: req.user._id})
 
         res.status(201).json({message: "Video Uploaded Successfully", newVideo})
 

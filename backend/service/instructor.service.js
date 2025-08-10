@@ -1,9 +1,10 @@
-import courseModel from "../models/course.models";
+import courseModel from "../models/course.models.js";
 import AppError from "../libs/customErrors.js"
 import videoModel from "../models/video.model.js"
 import ImageKit from "imagekit";
 import axios from "axios"
 import FormData from "form-data";
+import courseModel from "../models/course.models.js";
 
 
 export const createCourseService= async ({courseName, description, level, instructors})=>{
@@ -73,13 +74,27 @@ const uploadToImageKit= async ({videoFile})=>{
 }
 
 
-export const createNewVideoService= async ({title, courseId, order, videoFile})=>{
+export const createNewVideoService= async ({title, courseId, order, videoFile, userId})=>{
 
     if(!title || !courseId || !order || !videoFile){
         throw new AppError(400, "All Fields are required")
     }
     
     try {
+
+        // checking if the user is the part of Instructor of the course
+
+        const course= await courseModel.findById(courseId)
+
+        if (!course) {
+            throw new AppError(404, "Course not found");
+        }
+
+        if (!course.instructors.some(id => id.toString() === userId.toString())) {
+            throw new AppError(403, "Only Course Instructors can upload video");
+        }
+
+
         // checking if there are already video with this order
     
         const existingVideo= await videoModel.findOne({course: courseId, order: order})

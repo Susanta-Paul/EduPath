@@ -58,26 +58,35 @@ export const studentViewCourseController= async (req, res, next)=>{
 
         const courseId= req.params.courseId
         
-        // using nested populate to get the obj with requied field
-        
-        const enrollment= await enrollmentModel
-            .findOne({student: req.user._id, course: courseId})
-            .populate({
-                path: "course",
-                populate:{path:"instructors", select: "fullname username"}
-            })
-
-        if(enrollment){
-            return res.status(200).json({enroll: true, course: enrollment})
-        }
-
         // find course
-        const course= await courseModel.findOne({_id: courseId})
+        const course= await courseModel.findOne({_id: courseId}).populate({
+            path: "instructors",
+            select: "fullname username"
+        })
         if(!course){
             return res.status(404).json({message: "No course Found"})
         }
+    
+        // if student enroll in this course
+        
+        const enrollment= await enrollmentModel.findOne({student: req.user._id, course: courseId})
 
-        res.status(200).json({enroll: false, course: course})
+        // getting all courses videos title and order
+        const allCourseVideos= await videoModel.find({course: courseId}).select(["title", "order"])
+        
+        
+        if(enrollment){
+            return res.status(200).json(
+                {
+                    enroll: true, course: course, 
+                    allVideos: allCourseVideos,
+                    enrollment
+                }
+            )
+        }
+
+
+        res.status(200).json({enroll: false, course: course, allVideos: allCourseVideos})
 
     } catch (error) {
         res.status(500).json({ message: "Server error" });
