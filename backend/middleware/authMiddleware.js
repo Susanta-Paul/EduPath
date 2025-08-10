@@ -7,7 +7,7 @@ export const verifyJWT= async (req, res, next)=>{
         const accessToken= req.cookies.accessToken || req.headers?.authorization?.split(" ")[1]
 
         if(!accessToken){
-            return res.status(401).json({messsage: "No access token found"})
+            return res.status(401).json({message: "No access token found"})
         }
 
         const decoded=jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET)
@@ -15,11 +15,11 @@ export const verifyJWT= async (req, res, next)=>{
     
         const user= await userModel.findOne({username: decoded.username})
         if(!user){
-            return res.status(401).json({messsage: "user not found"})
+            return res.status(401).json({message: "user not found"})
         }
 
         if(!user.refreshToken){
-            return res.status(401).json({messsage: "Login First"})
+            return res.status(401).json({message: "Login First"})
         }
 
         req.user=user
@@ -35,7 +35,21 @@ export const verifyJWT= async (req, res, next)=>{
 export const verifyStudent= async (req, res, next)=>{
     try {
         if(req.user.role !== "Student"){
-            return res.status(403).json({messsage: "Only Students are Authorized to access this route"})
+            return res.status(403).json({message: "Only Students are Authorized to access this route"})
+        }
+
+        next()
+
+    } catch (error) {
+        res.status(500).json({errors: error})
+    }
+}
+
+export const verifyInstructor= async (req, res, next)=>{
+    try {
+        
+        if(req.user.role!=="Instructor"){
+            return res.status(403).json({message: "Only Instructors are Authorized to access this route"})
         }
 
         next()

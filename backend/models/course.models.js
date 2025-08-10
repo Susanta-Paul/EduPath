@@ -16,6 +16,7 @@ const courseSchema= new mongoose.Schema({
     duration:{
         type: Number, // in minutes
         required: true,
+        default: 0
     },
     level: {
         type: String,

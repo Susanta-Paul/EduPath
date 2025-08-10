@@ -1,0 +1,115 @@
+import courseModel from "../models/course.models";
+import AppError from "../libs/customErrors.js"
+import videoModel from "../models/video.model.js"
+import ImageKit from "imagekit";
+import axios from "axios"
+import FormData from "form-data";
+
+
+export const createCourseService= async ({courseName, description, level, instructors})=>{
+
+    if(!courseName || !description || !level || !instructors){
+        throw new AppError(400, "All fields are required")
+    }
+
+    try {
+        
+        const newCourse= await courseModel.create({courseName, description, level, instructors})
+
+        return newCourse
+
+    } catch (error) {
+        if(error.name=="ValidationError"){
+            throw new AppError(400, error.message)
+        }
+        else{
+            throw new AppError(500, error.message || "Internal Server Error")
+        }
+    }
+}
+
+const uploadToImageKit= async ({videoFile})=>{
+
+    const formData = new FormData();
+
+    // Append file from multer memoryStorage
+    const uniqueFileName = `${Date.now()}-${videoFile.originalname}`;
+    formData.append("file", videoFile.buffer, {
+        filename: uniqueFileName,
+        contentType: videoFile.mimetype
+    });
+    formData.append("fileName", uniqueFileName);
+
+    try {
+        const response= await axios.post("https://upload.imagekit.io/api/v2/files/upload",
+            formData, 
+            {
+                headers:{
+                    ...formData.getHeaders(), // sets Content-Type with correct boundary
+                    Accept: 'application/json',
+                    Authorization: `Basic ${Buffer.from(`${process.env.IMAGEKIT_PRIVATE_API_KEY}:`).toString("base64")}`
+                }
+            })
+
+        if (response.status === 200) {
+            return {
+                success: true,
+                fileId: response.data.fileId,
+                url: response.data.url,
+                name: response.data.name,
+                thumbnail: response.data.thumbnailUrl
+            };
+        } else {
+            return {
+                success: false,
+                status: response.status,
+                message: response.statusText,
+                data: response.data,
+            };
+        }
+    } catch (error) {
+        return error
+    }
+}
+
+
+export const createNewVideoService= async ({title, courseId, order, videoFile})=>{
+
+    if(!title || !courseId || !order || !videoFile){
+        throw new AppError(400, "All Fields are required")
+    }
+    
+    try {
+        // checking if there are already video with this order
+    
+        const existingVideo= await videoModel.findOne({course: courseId, order: order})
+    
+        if(existingVideo){
+            throw new AppError(400, `Video already exists with Order number ${order} in courseId: ${courseId}`)
+        }
+    
+        // uploading the videoFile in ImageKit
+
+        const result= await uploadToImageKit({videoFile})
+
+        if(!result.success){
+            throw new AppError(500, "Upload to ImageKit failed") 
+        }
+        
+        // storing the video obj in mongodb
+
+        delete result.success
+
+        const newVideo= await videoModel.create({
+            title, course:courseId, order,
+            publicUrl: result
+        })
+
+        return newVideo
+
+
+    } catch (error) {
+        throw new AppError(500, error.message || "Internal Server Error")
+    }
+
+}

@@ -5,6 +5,7 @@ import connectDb from "./db/db.js"
 import userRouter from "./routes/User.routes.js"
 import cookieParser from "cookie-parser"
 import studentRouter from "./routes/student.route.js"
+import instructorRouter from "./routes/instructor.route.js"
 
 const app=express()
 const server=createServer(app)
@@ -19,6 +20,7 @@ app.use(express.urlencoded({extended: true}))
 // routes
 app.use("/user", userRouter)
 app.use("/student", studentRouter)
+app.use("/instructor", instructorRouter)
 
 
 server.listen(process.env.PORT, ()=>{
