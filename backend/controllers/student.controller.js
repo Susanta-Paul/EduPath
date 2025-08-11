@@ -72,7 +72,7 @@ export const studentViewCourseController= async (req, res, next)=>{
         const enrollment= await enrollmentModel.findOne({student: req.user._id, course: courseId})
 
         // getting all courses videos title and order
-        const allCourseVideos= await videoModel.find({course: courseId}).select(["title", "order"])
+        const allCourseVideos= await videoModel.find({course: courseId}).select("title order")
         
         
         if(enrollment){

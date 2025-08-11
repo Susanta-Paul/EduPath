@@ -5,6 +5,7 @@ import ImageKit from "imagekit";
 import axios from "axios"
 import FormData from "form-data";
 import courseModel from "../models/course.models.js";
+import quizModel from "../models/quiz.model.js"
 
 
 export const createCourseService= async ({courseName, description, level, instructors})=>{
@@ -125,6 +126,28 @@ export const createNewVideoService= async ({title, courseId, order, videoFile, u
 
     } catch (error) {
         throw new AppError(500, error.message || "Internal Server Error")
+    }
+
+}
+
+export const createNewQuizService= async ({courseId, uploaderId, allQuizes})=>{
+
+    if(!courseId || !uploaderId || !allQuizes){
+        throw new AppError(400, "All fields are required")
+    }
+
+    try {
+        
+        const newQuiz= await quizModel.create({
+            uploadedBy: uploaderId,
+            course: courseId,
+            allQues: allQuizes
+        })
+
+        return newQuiz
+
+    } catch (error) {
+        throw new AppError(500, "Internal Server Error")
     }
 
 }

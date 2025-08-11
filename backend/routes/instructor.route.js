@@ -1,7 +1,9 @@
 import express from "express"
 import {verifyInstructor, verifyJWT} from "../middleware/authMiddleware.js"
 import {instructorGetCourseController, instructorCreateCourseController,
-        instructorUploadVideoController
+        instructorUploadVideoController, instructorViewCreatedCourseController,
+        instructorUploadQuizController, instructorViewCreatedCourseController,
+        instructorViewOverallProgressController
 
 } from "../controllers/instructor.controller.js"
 import {body, param} from "express-validator"
@@ -54,6 +56,39 @@ instructorRouter.post("/uploadvideo",[
         .isInt({ min: 1 }).withMessage("Order must be a positive integer"),
 ], verifyJWT, verifyInstructor, 
 uploadMiddleware.single("video"), instructorUploadVideoController)
+
+// view created course
+instructorRouter.get("/viewcreatedcourse", verifyJWT, verifyInstructor, instructorViewCreatedCourseController)
+
+
+// upload quiz to their course
+instructorRouter.post("/uploadquiz/:courseId",[
+    param("courseId")
+        .notEmpty().withMessage("courseId is required")
+        .isMongoId().withMessage("courseId must be a mongoDB objectID"),
+    body("quiz")
+        .isArray({ min: 1 }).withMessage("Quiz must be an non empty array"),
+    body("quiz.*.question")
+        .notEmpty().withMessage("Question is required")
+        .isString().withMessage("Question must be a string"),
+    body("quiz.*.options")
+        .isArray({ min: 1 }).withMessage("Options must be an non empty array"),
+    body("quiz.*.options.*")
+        .notEmpty().withMessage("options is required")
+        .isString().withMessage("Options must be a string"),
+    body("quiz.*.answer")
+        .notEmpty().withMessage("answer is required")
+        .isInt({min: 0}).withMessage("answer can not be negetive"),
+    
+], verifyJWT, verifyInstructor, instructorUploadQuizController)
+
+
+// view overall course Progress
+instructorRouter.get("/viewoverallprogress/:courseId",[
+    param("courseId")
+        .notEmpty().withMessage("courseId is required")
+        .isMongoId().withMessage("courseId must be a mongoDB objectID"),
+],verifyJWT, verifyInstructor, instructorViewOverallProgressController)
 
 
 export default instructorRouter
