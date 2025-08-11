@@ -58,3 +58,17 @@ export const verifyInstructor= async (req, res, next)=>{
         res.status(500).json({errors: error})
     }
 }
+
+export const verifyAdmin= async (req, res, next)=>{
+    try {
+        
+        if(!req.user.role=="Admin"){
+            return res.status(403).json({message: "Only Admins are Authorized to access this route"})
+        }
+
+        next()
+
+    } catch (error) {
+        res.status(500).json({errors: error})
+    }
+}
