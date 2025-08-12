@@ -6,17 +6,50 @@ import axios from "axios"
 import FormData from "form-data";
 import courseModel from "../models/course.models.js";
 import quizModel from "../models/quiz.model.js"
+import cloudinary from "../config/cloudinaryConfig.js"
 
 
-export const createCourseService= async ({courseName, description, level, instructors})=>{
+const uploadToCloudinary= async (imageBuffer, mimetype)=>{
+    
+    // Upload an image
 
-    if(!courseName || !description || !level || !instructors){
+    try {
+        const base64Image = `data:${mimetype};base64,${imageBuffer.toString("base64")}`;
+
+    
+        const uploadResult = await cloudinary.uploader
+           .upload(
+                base64Image, {
+                   resource_type: "image",
+                   folder: "edupath"
+                }
+            )
+            .catch((error) => {
+               console.log(error);
+            });
+        
+        const url= await uploadResult.url
+        return url
+    } catch (error) {
+        throw new AppError(500, `Cloudinary upload failed: ${error.message}`)
+    }
+}
+
+
+
+export const createCourseService= async ({courseName, description, level, instructors, imageBuffer, mimetype})=>{
+
+    if(!courseName || !description || !level || !instructors || !imageBuffer){
         throw new AppError(400, "All fields are required")
     }
 
     try {
         
-        const newCourse= await courseModel.create({courseName, description, level, instructors})
+        // upload the file in cloudinary 
+
+        const imageUrl= await uploadToCloudinary(imageBuffer, mimetype)
+        
+        const newCourse= await courseModel.create({courseName, description, level, instructors, image:imageUrl})
 
         return newCourse
 

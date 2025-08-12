@@ -36,11 +36,16 @@ export const instructorCreateCourseController= async (req, res, next)=>{
         return res.status(400).json({errors: errors.array()})
     }
 
+    if (!req.file) {
+        return res.status(400).json({ errors: ["Course image is required"] });
+    }
+
     try {
 
         const {courseName, description, level, instructors}= req.body
+        const imageBuffer= req.file.buffer
 
-        const newCourse= await createCourseService({courseName, description, level, instructors})
+        const newCourse= await createCourseService({courseName, description, level, instructors,imageBuffer, mimetype:req.file.mimetype})
 
         res.status(201).json({message: "Course Created Successfully", course: newCourse})
         

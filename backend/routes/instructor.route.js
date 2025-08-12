@@ -7,7 +7,7 @@ import {instructorGetCourseController, instructorCreateCourseController,
 
 } from "../controllers/instructor.controller.js"
 import {body, param} from "express-validator"
-import {uploadMiddleware} from "../middleware/videoMiddleware.js"
+import {uploadMiddleware, uploadImageMiddleware} from "../middleware/videoMiddleware.js"
 
 
 const instructorRouter= express.Router()
@@ -40,7 +40,8 @@ instructorRouter.post("/createcourse", [
     body("instructors.*")
         .isMongoId().withMessage("Each instructor must be a valid MongoDB ObjectId"),
 
-], verifyJWT, verifyInstructor, instructorCreateCourseController)
+], verifyJWT, verifyInstructor,
+    uploadImageMiddleware.single("image"), instructorCreateCourseController)
 
 // upload videos
 instructorRouter.post("/uploadvideo",[

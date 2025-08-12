@@ -28,3 +28,24 @@ export const uploadMiddleware = multer({
         fileSize: 100 * 1024 * 1024 // 100MB max size
     }
 })
+
+const imageFileFilter = (req, file, cb) => {
+  const allowedImageTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "image/webp"
+  ];
+
+  if (allowedImageTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only image files are allowed"), false);
+  }
+};
+
+export const uploadImageMiddleware = multer({ 
+  storage,
+  fileFilter: imageFileFilter,
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB
+});

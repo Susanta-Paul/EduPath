@@ -35,7 +35,11 @@ const courseSchema= new mongoose.Schema({
             },
             message: "Only Instructor can create a course."
         }
-    }]
+    }],
+    image:{
+        type: String,
+        required: true
+    }
 })
 courseSchema.statics.validateInstructors = async function (instructorIds) {
     const count = await userModel.countDocuments({
