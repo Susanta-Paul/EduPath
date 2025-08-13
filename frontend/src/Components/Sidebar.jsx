@@ -1,6 +1,7 @@
 import { IoHomeOutline } from "react-icons/io5";
 import { MdOndemandVideo } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
+import { FiLogOut } from "react-icons/fi";
 
 
 export default function Sidebar(){
@@ -17,6 +18,10 @@ export default function Sidebar(){
             <div className="flex flex-col justify-center items-center lg:flex-row lg:gap-4 lg:justify-start lg:mt-2 hover:bg-white/10 lg:p-2 lg:rounded-lg cursor-pointer">
                 <CgProfile/>
                 Profile
+            </div>
+            <div className="flex flex-col justify-center items-center lg:flex-row lg:gap-4 lg:justify-start lg:mt-2 hover:bg-white/10 lg:p-2 lg:rounded-lg cursor-pointer">
+                <FiLogOut/>
+                LogOut
             </div>
         </div>
     )

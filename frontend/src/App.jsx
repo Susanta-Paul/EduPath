@@ -12,7 +12,7 @@ function App() {
   return (
     <div className='bg-[#121212] min-h-screen text-white relative flex'>
       <Sidebar/>
-      <div className="w-full lg:w-[80%] ">
+      <div className="w-full lg:w-[80%] h-screen overflow-scroll overflow-x-hidden pb-15">
         <Home/>
       </div>
       
