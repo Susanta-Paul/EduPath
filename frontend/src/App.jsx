@@ -5,6 +5,7 @@ import Login from './Pages/Login.jsx'
 import SignUp from './Pages/Signup.jsx'
 import Sidebar from './Components/Sidebar.jsx'
 import Home from './Pages/Home.jsx'
+import Course from './Pages/Course.jsx'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -13,7 +14,8 @@ function App() {
     <div className='bg-[#121212] min-h-screen text-white relative flex'>
       <Sidebar/>
       <div className="w-full lg:w-[80%] h-screen overflow-scroll overflow-x-hidden pb-15">
-        <Home/>
+        <Course/>
+        {/* <Home/> */}
       </div>
       
     </div>

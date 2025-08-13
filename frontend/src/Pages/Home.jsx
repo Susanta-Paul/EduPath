@@ -6,19 +6,19 @@ export default function Home(){
 
     const [username, setUsername]=useState("Sarah")
     const [allCourses, setAllCourses]= useState([
-        {duration: "6 Month", level: "Beginner", title:"Calculas I", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
-        {duration: "6 Month", level: "Beginner", title:"programming", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
-        {duration: "6 Month", level: "Beginner", title:"React", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
-        {duration: "6 Month", level: "Beginner", title:"Mathematics", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
-        {duration: "6 Month", level: "Beginner", title:"NExt.js", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
-        {duration: "6 Month", level: "Beginner", title:"Machine Learning", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
-        {duration: "6 Month", level: "Advanced", title:"Blockchain", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
+        {duration: "6 Month", level: "Beginner", courseName:"Calculas I", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
+        {duration: "6 Month", level: "Beginner", courseName:"programming", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
+        {duration: "6 Month", level: "Beginner", courseName:"React", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
+        {duration: "6 Month", level: "Beginner", courseName:"Mathematics", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
+        {duration: "6 Month", level: "Beginner", courseName:"NExt.js", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
+        {duration: "6 Month", level: "Beginner", courseName:"Machine Learning", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
+        {duration: "6 Month", level: "Advanced", courseName:"Blockchain", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
     ])
 
     const [featured, setFeatured]=useState([
-        {duration: "6 Month", level: "Beginner", title:"Calculas I", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
-        {duration: "6 Month", level: "Beginner", title:"Calculas I", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
-        {duration: "6 Month", level: "Beginner", title:"Calculas I", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
+        {duration: "6 Month", level: "Beginner", courseName:"Calculas I", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
+        {duration: "6 Month", level: "Beginner", courseName:"Calculas I", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
+        {duration: "6 Month", level: "Beginner", courseName:"Calculas I", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
     ])
 
     const [titleSearch, setTitleSearch]=useState("")
@@ -41,7 +41,7 @@ export default function Home(){
             setSearchCourses([])
         }
 
-        const filteredCourse= allCourses.filter(course=>course.title.toLowerCase().includes(titleSearch.toLowerCase()))
+        const filteredCourse= allCourses.filter(course=>course.courseName.toLowerCase().includes(titleSearch.toLowerCase()))
 
         setSearchCourses(filteredCourse)
 
@@ -56,7 +56,7 @@ export default function Home(){
                 <div className="flex flex-wrap justify-around gap-y-9">
                     {featured.map((course, index)=>(
                         <CourseCard 
-                            title={course.title} 
+                            title={course.courseName} 
                             duration={course.duration} 
                             level={course.level}
                             instructors={course.instructors}
@@ -81,7 +81,7 @@ export default function Home(){
                         searchCourses.length==0?
                         (allCourses.map((course, index)=>(
                         <CourseCard 
-                            title={course.title} 
+                            title={course.courseName} 
                             duration={course.duration} 
                             level={course.level}
                             instructors={course.instructors}
@@ -91,7 +91,7 @@ export default function Home(){
                     ))):(
                         searchCourses.map((course, index)=>(
                         <CourseCard 
-                            title={course.title} 
+                            title={course.courseName} 
                             duration={course.duration} 
                             level={course.level}
                             instructors={course.instructors}
