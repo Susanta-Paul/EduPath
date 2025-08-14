@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { MdOutlineOndemandVideo } from "react-icons/md";
 import { SiTicktick } from "react-icons/si";
+import VideoModal from "../Components/VideoModal.jsx";
 
 export default function Course(){
 
@@ -37,6 +38,10 @@ export default function Course(){
             setAllVideos(sorted);
         }
     }, [allVideos]);
+
+
+    const [modalIsOpen, setIsOpen] =useState(false)
+
 
     return (
         <div className="p-5 pb-9">
@@ -138,8 +143,9 @@ export default function Course(){
                     </div>
                 ):(
                     <div className="gap-y-4 mt-4 flex flex-col justify-center items-center text-2xl font-bold md:flex-row md:justify-around">
-                        <button className="cursor-pointer rounded-xl p-4 w-[90%] md:w-[40%]" style={{backgroundColor:"rgba(0, 153, 255, 1)"}}> Add New Video </button>
+                        <button onClick={()=>{setIsOpen(true)}} className="cursor-pointer rounded-xl p-4 w-[90%] md:w-[40%]" style={{backgroundColor:"rgba(0, 153, 255, 1)"}}> Add New Video </button>
                         <button className="cursor-pointer rounded-xl p-4 w-[90%] md:w-[40%]" style={{backgroundColor:"rgba(0, 153, 255, 1)"}}> Add New Quiz </button>
+                        <VideoModal modalIsOpen={modalIsOpen} afterOpenModal={()=>{}} closeModal={()=>{setIsOpen(false)}} />
                     </div>
                 )
             }

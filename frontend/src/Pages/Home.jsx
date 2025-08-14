@@ -27,9 +27,10 @@ export default function Home(){
     useEffect(()=>{
 
         // generate 3 random value
-        const first=Math.floor(Math.random() * allCourses.length-1)
-        const second=Math.floor(Math.random() * allCourses.length-1)
-        const third=Math.floor(Math.random() * allCourses.length-1)
+        const first = Math.floor(Math.random() * (allCourses.length - 1));
+        const second = Math.floor(Math.random() * (allCourses.length - 1));
+        const third = Math.floor(Math.random() * (allCourses.length - 1));
+
 
         setFeatured([allCourses[first], allCourses[second], allCourses[third]])
 

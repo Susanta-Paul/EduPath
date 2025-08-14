@@ -22,6 +22,7 @@ instructorRouter.get("/course/:courseId", [
 
 
 // create Course
+// messed up so now only using one instructor Per Course
 instructorRouter.post("/createcourse", [
     body("courseName")
         .notEmpty().withMessage("Course name is required")

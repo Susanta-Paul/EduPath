@@ -38,7 +38,7 @@ export const studentViewEnrollmentController= async (req, res, next)=>{
             .find({student: req.user._id})
             .populate({
                 path: "course",
-                select: "courseName duration level"
+                select: "courseName duration level instructors image"
             })
 
         res.status(200).json({allEnrollment})
