@@ -21,7 +21,7 @@ export const userRegisterController= async (req, res, next)=>{
         const safeUser=user.toObject()
         delete safeUser.password;
 
-        const {accessToken, refreshToken}= user.generateAccessAndRefreshToken()
+        const {accessToken, refreshToken}= await user.generateAccessAndRefreshToken()
 
         const options={
             httpOnly: true,
@@ -80,7 +80,7 @@ export const userLogoutController= async (req, res, next)=>{
 
     try {
         const user= await userModel.findOneAndUpdate(
-            req.user.username,
+            { username: req.user.username },
             {$unset:{refreshToken:1}}, // this removes the field from document
             {new: true}
         )
@@ -112,11 +112,15 @@ export const userRenewTokenController= async (req, res, next)=>{
     
     try {
         
-        const decoded=jwt.verify(incomingToken, REFRESH_TOKEN_SECRET)
+        const decoded=jwt.verify(incomingToken, process.env.REFRESH_TOKEN_SECRET)
         const user= await userModel.findOne({username: decoded.username})
 
         if(!user){
             return res.status(401).json({message: "Invalid Token"})
+        }
+
+        if(!user.refreshToken){
+            return res.status(401).json({message: "Please Login First"})
         }
 
         if(user.refreshToken !== incomingToken){

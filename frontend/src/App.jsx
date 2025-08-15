@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import Login from './Pages/Login.jsx'
@@ -17,33 +17,35 @@ import ProtectedRoute from './ProtectedRoute.jsx'
 import {Route, Routes, BrowserRouter, Navigate} from "react-router-dom"
 
 function App() {
-  const [count, setCount] = useState(0)
 
 
-  const isLoggedIn= localStorage?.getItem("isLoggedIn") || false
-  const userType= isLoggedIn? localStorage?.getItem("userType"): null
+  const [isLoggedIn, setIsLoggedIn]= useState(localStorage.getItem("isLoggedIn") === "true")
+  const [userType, setUserType]= useState(isLoggedIn? localStorage?.getItem("userType"): null)
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      setUserType(localStorage.getItem("userType"));
+    }
+  }, [isLoggedIn]);
 
 
 
   return (
     <BrowserRouter >
       <div className='bg-[#121212] min-h-screen text-white relative flex'>
-        <Sidebar userType={userType} isLoggedIn={isLoggedIn} />
+        <Sidebar 
+        userType={userType} 
+        isLoggedIn={isLoggedIn} 
+        setUserType={setUserType}
+        setIsLoggedIn={setIsLoggedIn} />
         <div className="w-full lg:w-[80%] h-screen overflow-scroll overflow-x-hidden pb-15">
-          {/* <Course/> */}
-          {/* <Home/> */}
-          {/* <MyEnrollment/> */}
-          {/* <MyCourses/> */}
-          {/* <CreateCourse/> */}
-          {/* <QuestionCard/> */}
-          {/* <QuizSubmit/> */} 
           
           <Routes>
             {/* Public Routes */}
             {!isLoggedIn && (
               <>
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<SignUp />} />
+                <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setUserType={setUserType}/>} />
+                <Route path="/signup" element={<SignUp setIsLoggedIn={setIsLoggedIn} setUserType={setUserType}  />} />
                 <Route path="*" element={<Navigate to="/login" />} />
               </>
             )}

@@ -7,11 +7,18 @@ import cookieParser from "cookie-parser"
 import studentRouter from "./routes/student.route.js"
 import instructorRouter from "./routes/instructor.route.js"
 import adminRouter from "./routes/admin.route.js"
+import cors from "cors"
 
 const app=express()
 const server=createServer(app)
 dotenv.config({override: true})
 connectDb()
+
+app.use(cors({
+    origin: "http://localhost:5173",
+    // origin: process.env.ORIGIN,
+    credentials: true // required for setting the cookies
+}))
 
 app.use(cookieParser())
 

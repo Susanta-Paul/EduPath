@@ -2,7 +2,7 @@ import express from "express"
 import {verifyInstructor, verifyJWT} from "../middleware/authMiddleware.js"
 import {instructorGetCourseController, instructorCreateCourseController,
         instructorUploadVideoController, instructorViewCreatedCourseController,
-        instructorUploadQuizController, instructorViewCreatedCourseController,
+        instructorUploadQuizController,
         instructorViewOverallProgressController
 
 } from "../controllers/instructor.controller.js"

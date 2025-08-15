@@ -4,7 +4,6 @@ import videoModel from "../models/video.model.js"
 import ImageKit from "imagekit";
 import axios from "axios"
 import FormData from "form-data";
-import courseModel from "../models/course.models.js";
 import quizModel from "../models/quiz.model.js"
 import cloudinary from "../config/cloudinaryConfig.js"
 

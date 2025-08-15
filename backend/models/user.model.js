@@ -37,11 +37,12 @@ const userSchema=new mongoose.Schema({
     }
 })
 
-userSchema.methods.generateAccessAndRefreshToken= function (){
+userSchema.methods.generateAccessAndRefreshToken=async function (){
     const accessToken= jwt.sign({username: this.username}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "30m"})
     const refreshToken=jwt.sign({username: this.username}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: "30d"})
 
-    this.refreshToken = refreshToken; // immediately storing it in DB
+    this.refreshToken = refreshToken; 
+    await this.save();  // immediately storing it in DB
 
     return {accessToken, refreshToken}
 }

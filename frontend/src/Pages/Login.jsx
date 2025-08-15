@@ -1,4 +1,52 @@
-export default function Login(){
+import { useState } from "react"
+import {NavLink, useNavigate} from "react-router-dom"
+import axios from "axios"
+
+export default function Login({setIsLoggedIn, setUserType}){
+
+    const [error, setError]=useState("")
+    const navigate=useNavigate()
+
+    async function handleLogin(e){
+        e.preventDefault()
+
+        const data= {
+            username: e.target.username.value,
+            password: e.target.password.value
+        }
+
+        try {
+            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user/login`,
+                data,
+                {withCredentials: true}
+            )
+
+            if(response.status==200){
+                alert("User LoggedIn Successfully")
+                localStorage.setItem("isLoggedIn", true)
+                localStorage.setItem("userType", response.data.user.role)
+                localStorage.setItem("userId", response.data.user._id)
+                localStorage.setItem("username", response.data.user.username)
+                console.log(response.data)
+
+                setIsLoggedIn(true)
+                setUserType(response.data.user.role)
+
+                navigate("/")
+            }
+
+        } catch (error) {
+            console.error(error.response?.data)
+            if(error.status==400){
+                setError(error.response?.data?.errors[0].msg)
+            }else{
+                setError(error.response?.data?.errors)
+            }
+            
+        }
+    }
+
+
     return(
         <div>
             <div className="flex justify-center items-center h-screen">
@@ -9,7 +57,7 @@ export default function Login(){
                         >Welcome Back To EduPath</h1>
                         <p className="text-gray-500 text-md mt-2 md:text-xl">Enter your username and password to Login</p>
                     </div>
-                    <form className="flex flex-col items-center mt-10">
+                    <form className="flex flex-col items-center mt-10" onSubmit={(e)=>handleLogin(e)} >
                         <div className="flex gap-3 items-center flex-wrap mb-2">
                             <span className="text-xl font-bold md:text-2xl">Username: </span>
                             <input required
@@ -25,9 +73,10 @@ export default function Login(){
                         <input className="cursor-pointer mt-3 py-1 w-[90%] bg-blue-600 rounded-md text-xl font-bold hover:bg-blue-700 " 
                         type="submit" value="Login" />
                     </form>
+                    <div className="text-xl text-red-500"> {error} </div>
                     <div className="text-xl mt-5 flex justify-center">
                         Don't have an account?  
-                        <button className="ml-2 font-bold cursor-pointer">SignUp</button>
+                        <NavLink to="/signup" ><button className="ml-2 font-bold cursor-pointer">SignUp</button></NavLink>
                     </div>
                 </div>
             </div>
