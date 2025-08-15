@@ -3,7 +3,7 @@ import { MdOndemandVideo } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { FiLogOut } from "react-icons/fi";
 import axios from "axios"
-import {useNavigate} from "react-router-dom"
+import {useNavigate, NavLink} from "react-router-dom"
 import apiRequest from "./ApiRequest.js";
 
 export default function Sidebar({userType, isLoggedIn, setUserType, setIsLoggedIn}){
@@ -37,35 +37,35 @@ export default function Sidebar({userType, isLoggedIn, setUserType, setIsLoggedI
 
     return (
         <div className="w-screen pb-4 bg-[#121212] border-t border-white pt-3 fixed bottom-0 flex justify-around text-xl lg:w-[20%] lg:flex-col lg:text-2xl lg:h-screen lg:justify-start lg:static lg:border-r lg:border-white lg:p-3">
-            <div className="flex flex-col justify-center items-center lg:flex-row lg:gap-4 lg:justify-start lg:mt-2 hover:bg-white/10 lg:p-2 lg:rounded-lg cursor-pointer">
+            <NavLink to="/"><div className="flex flex-col justify-center items-center lg:flex-row lg:gap-4 lg:justify-start lg:mt-2 hover:bg-white/10 lg:p-2 lg:rounded-lg cursor-pointer">
                 <IoHomeOutline/>
                 Home
-            </div>
+            </div></NavLink>
             {
                 userType==="Student" && (
-                    <div className="flex flex-col justify-center items-center lg:flex-row lg:gap-4 lg:justify-start lg:mt-2 hover:bg-white/10 lg:p-2 lg:rounded-lg cursor-pointer">
+                    <NavLink to="/myenrollments"><div className="flex flex-col justify-center items-center lg:flex-row lg:gap-4 lg:justify-start lg:mt-2 hover:bg-white/10 lg:p-2 lg:rounded-lg cursor-pointer">
                         <MdOndemandVideo/>
                         My Enrollments
-                    </div>
+                    </div></NavLink>
                 )
             }
 
             {
                 userType==="Instructor" && (
-                    <div className="flex flex-col justify-center items-center lg:flex-row lg:gap-4 lg:justify-start lg:mt-2 hover:bg-white/10 lg:p-2 lg:rounded-lg cursor-pointer">
+                    <NavLink to="/mycourses"><div className="flex flex-col justify-center items-center lg:flex-row lg:gap-4 lg:justify-start lg:mt-2 hover:bg-white/10 lg:p-2 lg:rounded-lg cursor-pointer">
                         <MdOndemandVideo/>
                         My Courses
-                    </div>
+                    </div></NavLink>
                 )
             }
 
             {
                 isLoggedIn && (
                     <>
-                        <div className="flex flex-col justify-center items-center lg:flex-row lg:gap-4 lg:justify-start lg:mt-2 hover:bg-white/10 lg:p-2 lg:rounded-lg cursor-pointer">
+                        <NavLink to="/profile"><div className="flex flex-col justify-center items-center lg:flex-row lg:gap-4 lg:justify-start lg:mt-2 hover:bg-white/10 lg:p-2 lg:rounded-lg cursor-pointer">
                             <CgProfile/>
                             Profile
-                        </div>
+                        </div></NavLink>
                         <div onClick={handleSignOut}  className="flex flex-col justify-center items-center lg:flex-row lg:gap-4 lg:justify-start lg:mt-2 hover:bg-white/10 lg:p-2 lg:rounded-lg cursor-pointer">
                             <FiLogOut/>
                             LogOut

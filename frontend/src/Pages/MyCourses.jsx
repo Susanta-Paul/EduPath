@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import CourseCard from "../Components/CourseCard.jsx";
+import {NavLink} from "react-router-dom"
 
 export default function MyCourses() {
   const [myCourses, setMyCourses] = useState([
@@ -39,7 +40,7 @@ export default function MyCourses() {
             className="w-[90%] border border-white text-xl md:w-[50%] "
             onChange={(e) => setTitleSearch(e.target.value)}
           />
-          <button className="text-xl font-bold bg-blue-400 p-2 rounded-lg cursor-pointer">Create New Course</button>
+          <NavLink to="/createcourse"> <button className="text-xl font-bold bg-blue-400 p-2 rounded-lg cursor-pointer">Create New Course</button></NavLink>
         </div>
         
       </div>

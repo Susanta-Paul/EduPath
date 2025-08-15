@@ -5,34 +5,7 @@ import ImageKit from "imagekit";
 import axios from "axios"
 import FormData from "form-data";
 import quizModel from "../models/quiz.model.js"
-import cloudinary from "../config/cloudinaryConfig.js"
-
-
-const uploadToCloudinary= async (imageBuffer, mimetype)=>{
-    
-    // Upload an image
-
-    try {
-        const base64Image = `data:${mimetype};base64,${imageBuffer.toString("base64")}`;
-
-    
-        const uploadResult = await cloudinary.uploader
-           .upload(
-                base64Image, {
-                   resource_type: "image",
-                   folder: "edupath"
-                }
-            )
-            .catch((error) => {
-               console.log(error);
-            });
-        
-        const url= await uploadResult.url
-        return url
-    } catch (error) {
-        throw new AppError(500, `Cloudinary upload failed: ${error.message}`)
-    }
-}
+import {uploadToCloudinary} from "../config/cloudinaryConfig.js"
 
 
 

@@ -23,7 +23,7 @@ instructorRouter.get("/course/:courseId", [
 
 // create Course
 // messed up so now only using one instructor Per Course
-instructorRouter.post("/createcourse", [
+instructorRouter.post("/createcourse",uploadImageMiddleware.single("image"), [
     body("courseName")
         .notEmpty().withMessage("Course name is required")
         .isString().withMessage("Course name must be a string")
@@ -41,8 +41,7 @@ instructorRouter.post("/createcourse", [
     body("instructors.*")
         .isMongoId().withMessage("Each instructor must be a valid MongoDB ObjectId"),
 
-], verifyJWT, verifyInstructor,
-    uploadImageMiddleware.single("image"), instructorCreateCourseController)
+], verifyJWT, verifyInstructor, instructorCreateCourseController)
 
 // upload videos
 instructorRouter.post("/uploadvideo",[
