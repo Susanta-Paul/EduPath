@@ -1,16 +1,33 @@
 import { useEffect, useState } from "react";
 import CourseCard from "../Components/CourseCard.jsx";
 import {NavLink} from "react-router-dom"
+import apiRequest from "../Components/ApiRequest.js"
 
 export default function MyCourses() {
-  const [myCourses, setMyCourses] = useState([
-    { courseName: "derr", duration: "Month", level: "veg", instructors: ["dr. stang"], image: "" } ,
-    { courseName: "math", duration: "2 Month", level: "non-veg", instructors: ["dr. stang"], image: "" } ,
-    { courseName: "science", duration: "3 Month", level: "veg", instructors: ["dr. stang"], image: "" },
-  ]);
+  const [myCourses, setMyCourses] = useState([]);
 
   const [titleSearch, setTitleSearch] = useState("");
   const [searchCourses, setSearchCourses] = useState([]);
+
+  useEffect(()=>{
+
+    async function getCourses(){
+
+      try {
+        const response = await apiRequest("get", "/instructor/viewcreatedcourse" )
+
+        console.log(response.data)
+        setMyCourses(response.data.allCourses)
+
+      } catch (error) {
+        console.error("some error occur", error)
+      }
+
+    }
+
+    getCourses()
+
+  },[])
 
   useEffect(() => {
     if (titleSearch.trim() === "") {
@@ -54,6 +71,7 @@ export default function MyCourses() {
               level={course.level}
               instructors={course.instructors}
               image={course.image}
+              id={course._id}
               key={index}
             />
           ))

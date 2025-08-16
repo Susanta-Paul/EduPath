@@ -15,7 +15,10 @@ export const instructorGetCourseController= async (req, res, next)=>{
     try {
         const courseId= req.params.courseId
 
-        const course= await courseModel.findById(courseId)
+        const course= await courseModel.findById(courseId).populate({
+            path: "instructors",
+            select: "fullname"
+        })
         if(!course){
             return res.status(404).json({message: "No course Found"})
         }
@@ -42,10 +45,10 @@ export const instructorCreateCourseController= async (req, res, next)=>{
 
     try {
 
-        const {courseName, description, level, instructors}= req.body
+        const {courseName, description, level, instructors, duration, unit}= req.body
         const imageBuffer= req.file.buffer
 
-        const newCourse= await createCourseService({courseName, description, level, instructors,imageBuffer, mimetype:req.file.mimetype})
+        const newCourse= await createCourseService({duration, unit, courseName, description, level, instructors,imageBuffer, mimetype:req.file.mimetype})
 
         res.status(201).json({message: "Course Created Successfully", course: newCourse})
         
@@ -98,7 +101,10 @@ export const instructorViewCreatedCourseController= async (req, res, next)=>{
     try {
         const userId= req.user._id
     
-        const allCourses= await courseModel.find({instructors: { $in: [userId]}})
+        const allCourses= await courseModel.find({instructors: { $in: [userId]}}).populate({
+            path: "instructors",
+            select: "fullname"
+        })
 
         res.status(200).json({allCourses})
     } catch (error) {

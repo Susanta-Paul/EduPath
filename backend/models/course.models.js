@@ -14,9 +14,15 @@ const courseSchema= new mongoose.Schema({
         minlength: [20, "Course Description must be at least 20 character Long"]
     },
     duration:{
-        type: Number, // in minutes
-        required: true,
-        default: 0
+        number: {
+            type: Number,
+            required: true,
+        },
+        unit: {
+            type: String,
+            required: true, 
+            enum: ["Hours", "Days", "Months"]
+        }
     },
     level: {
         type: String,

@@ -18,8 +18,10 @@ export default function CreateCourse() {
     const courseName = e.target.courseName.value.trim()
     const description = e.target.description.value.trim()
     const level = e.target.level.value
+    const duration = e.target.duration.value
+    const unit = e.target.unit.value
 
-    if (!courseName || !description || !level || !image) {
+    if (!courseName || !description || !level || !image || !duration || !unit ) {
       alert("Please fill all fields and upload an image")
       return
     }
@@ -29,6 +31,8 @@ export default function CreateCourse() {
     formData.append("courseName", courseName)
     formData.append("description", description)
     formData.append("level", level)
+    formData.append("duration", duration)
+    formData.append("unit", unit)
     formData.append("instructors[]", localStorage.getItem("userId"))
 
     try {
@@ -98,6 +102,31 @@ export default function CreateCourse() {
               accept="image/*"
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
             />
+          </div>
+
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Course Duration
+          </label>
+          <div className="flex items-center">
+            <div>
+              <input
+                type="number"
+                name="duration"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              />
+            </div>
+            <select
+              name="unit"
+              className="w-full border text-black font-bold border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              defaultValue=""
+            >
+              <option value="" disabled>
+                Select Unit
+              </option>
+              <option value="Hours">Hours</option>
+              <option value="Days">Days</option>
+              <option value="Months">Months</option>
+            </select>
           </div>
 
           {/* Level */}

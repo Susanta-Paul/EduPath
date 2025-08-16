@@ -36,6 +36,13 @@ instructorRouter.post("/createcourse",uploadImageMiddleware.single("image"), [
         .notEmpty().withMessage("Course Level  is required")
         .isString().withMessage("Course Level must be a string")
         .isIn(["Beginner", "Intermediate", "Advanced"]).withMessage("Level must be one of these 'Beginner', 'Intermediate', 'Advanced'"),
+    body("unit")
+        .notEmpty().withMessage("Duration Unit is required")
+        .isString().withMessage("Duration unit must be a string")
+        .isIn(["Hours", "Days", "Months"]).withMessage("Level must be one of these 'Hours', 'Days', 'Months'"),
+    body("duration")
+        .notEmpty().withMessage("Duration is required")
+        .isInt().withMessage("Duration must be an Integer"),
     body("instructors")
         .isArray().withMessage("Instructor must be an array"),
     body("instructors.*")

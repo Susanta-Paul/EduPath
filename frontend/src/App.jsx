@@ -55,7 +55,7 @@ function App() {
               {/* Common routes for all logged-in users */}
               <Route path="/" element={<Home />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/course/:courseId" element={<Course />} />
+              <Route path="/course/:courseId" element={<Course userRole={userType} />} />
 
               {/* Student-only routes */}
               {userType === "Student" && (

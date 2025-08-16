@@ -9,7 +9,7 @@ import {uploadToCloudinary} from "../config/cloudinaryConfig.js"
 
 
 
-export const createCourseService= async ({courseName, description, level, instructors, imageBuffer, mimetype})=>{
+export const createCourseService= async ({duration, unit, courseName, description, level, instructors, imageBuffer, mimetype})=>{
 
     if(!courseName || !description || !level || !instructors || !imageBuffer){
         throw new AppError(400, "All fields are required")
@@ -21,7 +21,14 @@ export const createCourseService= async ({courseName, description, level, instru
 
         const imageUrl= await uploadToCloudinary(imageBuffer, mimetype)
         
-        const newCourse= await courseModel.create({courseName, description, level, instructors, image:imageUrl})
+        const newCourse= await courseModel.create({
+            courseName, 
+            description, 
+            level, 
+            instructors, 
+            image:imageUrl,
+            duration: {number: duration, unit: unit}
+        })
 
         return newCourse
 

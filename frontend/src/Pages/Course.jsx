@@ -2,15 +2,17 @@ import { useEffect, useState } from "react"
 import { MdOutlineOndemandVideo } from "react-icons/md";
 import { SiTicktick } from "react-icons/si";
 import VideoModal from "../Components/VideoModal.jsx";
+import {useParams} from "react-router-dom"
+import apiRequest from "../Components/ApiRequest.js"
 
-export default function Course(){
+export default function Course({userRole}){
 
-    const [userRole, setUserRole]=useState("Instructor")
+    const {courseId}= useParams()
     
     const [course, setCourse]=useState({
         description: "This advanced React.js course is designed for experienced React developers seeking to master complex concepts and build highly performant, scalable, and maintainable applications. The curriculum delves beyond foundational principles, focusing on advanced state management, performance optimization, design patterns, testing, and modern tooling.",
         courseName: "Advanced React.js",
-        duration: "2 Month",
+        duration: {number: "", unit: ""},
         level:"Advanced",
         instructors: [{fullname: "Dr. Stang", username: ''},{fullname: "Dr. Smith", username: ''}],
         image: "https://static-assets.codecademy.com/assets/course-landing-page/meta/16x9/learn-advanced-react.jpg",
@@ -30,6 +32,58 @@ export default function Course(){
 
     const [overallProgrss, setOverallProgrss]=useState(75)
 
+
+    useEffect(()=>{
+
+        async function getCurrentCourseForStudent(params) {
+            try {
+                const response= await apiRequest("get", `/student/viewcourse/${courseId}`)
+                console.log(response.data)
+                setAllVideos(response.data.allVideos)
+                setCourse(response.data.course)
+
+                if(response.data.enroll){
+                    setIsEnroll(true)
+                    setEnrollment(response.data.enrollment)
+                }else{
+                    setIsEnroll(false)
+                    setEnrollment({progress: 0, completedVideosIds:[]})
+                    setOverallProgrss(0)
+                }
+            } catch (error) {
+                console.error("something went wrong", error)
+            }
+        }
+
+
+        async function getCurrentCourseForInstructor(params) {
+            try {
+                const response= await apiRequest("get", `/instructor/course/${courseId}`)
+                console.log(response.data)
+                setAllVideos(response.data.allVideos)
+                setCourse(response.data.course)
+                setIsEnroll(false)
+
+                const getOverallProgress= await apiRequest("get", `/instructor/viewoverallprogress/${courseId}`)
+
+                setOverallProgrss(getOverallProgress.data.overallProgrss)
+
+
+            } catch (error) {
+                console.error("something went wrong", error)
+            }
+        }
+
+        if(userRole=="Student"){
+            getCurrentCourseForStudent()
+        }else{
+            getCurrentCourseForInstructor()
+        }
+
+
+    },[])
+
+
     useEffect(() => {
         const sorted = [...allVideos].sort((a, b) => a.order - b.order);
         
@@ -42,11 +96,38 @@ export default function Course(){
 
     const [modalIsOpen, setIsOpen] =useState(false)
 
+    async function enrollCourse() {
+        
+        // to do ;
+    }
+
+
+    async function makeEnrollment() {
+        
+        try {
+
+            const data= {
+                courseId: courseId,
+                username: localStorage.getItem("username")
+            }
+
+            const response= await apiRequest("post", "/student/makeenrollment", data )
+
+            console.log(response.data.newEnrollment)
+            setIsEnroll(true)
+
+        } catch (error) {
+            console.error("something went wrong",error)
+        }
+
+    }
+
+
 
     return (
         <div className="p-5 pb-9">
-            <div className="border-b border-white mb-5">
-                <img src={course.image} alt="Course Thumbnail" className="rounded-lg" />
+            <div className="border-b border-white mb-5 max-h-130 overflow-hidden">
+                <img src={course.image} alt="Course Thumbnail" className="rounded-lg contain " />
                 <div className="font-bold text-3xl mt-4 mb-4">{course.courseName}</div>
             </div>
 
@@ -70,14 +151,14 @@ export default function Course(){
             {
                 section==="syllabus"?
                 (
-                    <div>
+                    <div >
                         <h2 className="text-2xl font-bold mt-4">Course Overview</h2>
                         <p className="text-lg mt-4"> {course.description} </p>
 
                         <h2 className="text-2xl font-bold mt-4 mb-3">Course Outline</h2>
                         <div>
                             {allVideos.map((video, index)=>(
-                                <div key={index}
+                                <div key={video.id}
                                 className="flex items-center gap-3 text-2xl cursor-pointer mb-1 hover:bg-white/10 p-3"
                                 >
                                     {isEnroll && enrollment?.completedVideosIds?.includes(video.id) && (
@@ -95,7 +176,7 @@ export default function Course(){
                     </div>
                 ):(
                     section==="progress"?(
-                        <div>
+                        <div >
                             {isEnroll? (
                                 <div className="text-2xl font-bold my-5">
                                     <h2 className="mb-5">Your Progress</h2>
@@ -120,7 +201,7 @@ export default function Course(){
                                     </div>
                                 )
                             )}
-                            
+                        
                         </div>
                     ):(
                         <div className="mt-4 pl-3">
@@ -128,7 +209,8 @@ export default function Course(){
                             <div className="text-lg mt-2"> {course.instructors.map((teacher, index)=>(
                                 <div> {index+1}. {teacher.fullname} </div>
                             ))} </div>
-                            <span className="font-bold text-xl">Difficulty:</span><span className="text-xl"> {course.level} </span>
+                            <span className="font-bold text-xl">Difficulty:</span><span className="text-xl"> {course.level} </span><br />
+                            <span className="font-bold text-xl">Duration: </span><span className="text-xl"> {course.duration.number} {course.duration.unit} </span>
                         </div>
                     )
                 )
@@ -137,7 +219,7 @@ export default function Course(){
             
             {
                 userRole==="Student"? (
-                    <div className="cursor-pointer rounded-xl mt-4 flex justify-center items-center p-4 text-2xl font-bold"
+                    <div onClick={makeEnrollment} className="cursor-pointer rounded-xl mt-4 flex justify-center items-center p-4 text-2xl font-bold"
                     style={{backgroundColor:"rgba(0, 153, 255, 1)"}}>
                         <button>{isEnroll?"Continue Learning":"Enroll Now"}</button>
                     </div>

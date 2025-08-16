@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import CourseCard from "../Components/CourseCard.jsx";
+import apiRequest from "../Components/ApiRequest.js"
 
 export default function MyEnrollment() {
   const [myEnrollment, setMyEnrollment] = useState([
@@ -11,6 +12,21 @@ export default function MyEnrollment() {
   const [titleSearch, setTitleSearch] = useState("");
   const [searchCourses, setSearchCourses] = useState([]);
 
+  useEffect(()=>{
+
+    async function getMyEnrollments(){
+      try {
+        const response= await apiRequest("get", "/student/viewenrollment" )
+        console.log(response.data)
+        setMyEnrollment(response.data.allEnrollment)
+      } catch (error) {
+        console.error("some error occur", error)
+      }
+    }
+    getMyEnrollments()
+
+  },[])
+  
   useEffect(() => {
     if (titleSearch.trim() === "") {
       setSearchCourses([]);
@@ -49,6 +65,7 @@ export default function MyEnrollment() {
               level={enroll?.course.level}
               instructors={enroll?.course.instructors}
               image={enroll?.course.image}
+              id={enroll?.course._id}
               key={index}
             />
           ))

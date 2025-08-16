@@ -1,30 +1,38 @@
 import { useEffect, useState } from "react";
 import CourseCard from "../Components/CourseCard.jsx";
+import apiRequest from "../Components/ApiRequest.js"
 
 
 export default function Home(){
 
-    const [username, setUsername]=useState("Sarah")
-    const [allCourses, setAllCourses]= useState([
-        {duration: "6 Month", level: "Beginner", courseName:"Calculas I", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
-        {duration: "6 Month", level: "Beginner", courseName:"programming", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
-        {duration: "6 Month", level: "Beginner", courseName:"React", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
-        {duration: "6 Month", level: "Beginner", courseName:"Mathematics", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
-        {duration: "6 Month", level: "Beginner", courseName:"NExt.js", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
-        {duration: "6 Month", level: "Beginner", courseName:"Machine Learning", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
-        {duration: "6 Month", level: "Advanced", courseName:"Blockchain", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
-    ])
+    const [username, setUsername]=useState(localStorage.getItem("username"))
+    const [allCourses, setAllCourses]= useState([])
 
-    const [featured, setFeatured]=useState([
-        {duration: "6 Month", level: "Beginner", courseName:"Calculas I", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
-        {duration: "6 Month", level: "Beginner", courseName:"Calculas I", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
-        {duration: "6 Month", level: "Beginner", courseName:"Calculas I", instructors: ["Dr. Gilbert Stang", "Prof. Walter Lewin"], image: "https://study.com/cimages/videopreview/videopreview-full/zdlidyvu1w.jpg"},
-    ])
+    const [featured, setFeatured]=useState([])
 
     const [titleSearch, setTitleSearch]=useState("")
     const [searchCourses, setSearchCourses]=useState([])
 
     useEffect(()=>{
+        async function browseCourses(){
+
+            try {
+                const response = await apiRequest("get", "/user/allcourses" )
+                console.log(response.data)
+                setAllCourses(response.data.allCourses)
+            } catch (error) {
+                console.error("some error occur", error)
+            }
+
+        }
+        browseCourses()
+    },[])
+
+    useEffect(()=>{
+
+        if(allCourses.length==0){
+            return
+        }
 
         // generate 3 random value
         const first = Math.floor(Math.random() * (allCourses.length - 1));
@@ -57,6 +65,7 @@ export default function Home(){
                 <div className="flex flex-wrap justify-around gap-y-9">
                     {featured.map((course, index)=>(
                         <CourseCard 
+                            id={course._id}
                             title={course.courseName} 
                             duration={course.duration} 
                             level={course.level}
@@ -87,11 +96,13 @@ export default function Home(){
                             level={course.level}
                             instructors={course.instructors}
                             image={course.image}
+                            id={course._id}
                             key={index}
                         />
                     ))):(
                         searchCourses.map((course, index)=>(
                         <CourseCard 
+                            id={course._id}
                             title={course.courseName} 
                             duration={course.duration} 
                             level={course.level}
