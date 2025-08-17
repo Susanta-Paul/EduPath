@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import Modal from 'react-modal';
+import apiRequest from './ApiRequest';
+import { useNavigate } from 'react-router-dom';
 
-export default function VideoModal({modalIsOpen, afterOpenModal, closeModal}){
+export default function VideoModal({modalIsOpen, afterOpenModal, closeModal, courseId, order}){
 
     const [title, setTitle] = useState("");
     const [video, setVideo] = useState(null);
     const [uploading, setUploading] = useState(false);
+    const navigate=useNavigate()
 
     const handleSubmit = async (e) => {
+        setUploading(true)
         e.preventDefault();
 
         if (!video) {
@@ -17,25 +21,24 @@ export default function VideoModal({modalIsOpen, afterOpenModal, closeModal}){
 
         const formData = new FormData();
         formData.append("title", title);
-        formData.append("video", video); // Must match multer field name
+        formData.append("video", video);
+        formData.append("course", courseId);
+        formData.append("order", order);
 
         try {
-        setUploading(true);
 
-        const res = await axios.post("http://localhost:5000/upload", formData, {
-            headers: {
-            "Content-Type": "multipart/form-data", // Let axios set the boundary automatically
-            },
-        });
+            const response=await apiRequest("post", "/instructor/uploadvideo", formData)
 
-        console.log("Upload response:", res.data);
+            console.log(response.data)
 
-        alert(`Video uploaded! URL: ${res.data.url}`);
+            alert("video Successfully uploaded")
+            navigate("/mycourses")
+        
         } catch (err) {
-        console.error("Upload failed:", err);
-        alert("Upload failed");
+            console.error("Upload failed:", err);
+            alert("Upload failed");
         } finally {
-        setUploading(false);
+            setUploading(false);
         }
     };
 
@@ -74,13 +77,14 @@ export default function VideoModal({modalIsOpen, afterOpenModal, closeModal}){
             <div className='font-bold underline text-white'>Add New Video</div>
             <button className='font-bold p-3 bg-gray-500 text-white rounded-lg cursor-pointer' onClick={closeModal} >Close</button>
         </div>
-        <form>
+        <form onSubmit={(e)=>{handleSubmit(e)}}>
             <div className='text-white mb-4 flex flex-col gap-4 lg:flex-row'>
                 <label className='font-bold text-xl'>Title of the Video</label>
                 <input
                 type="text"
                 placeholder="Enter title"
                 value={title}
+                required
                 className='border border-white'
                 onChange={(e) => setTitle(e.target.value)}
                 />
@@ -91,10 +95,13 @@ export default function VideoModal({modalIsOpen, afterOpenModal, closeModal}){
                 <input
                 type="file"
                 accept="video/*"
+                required
                 onChange={(e) => setVideo(e.target.files[0])}
                 />
             </div>
-            <button className='cursor-pointer font-bold bg-blue-400 p-3 rounded-lg mt-4'>Upload</button>
+            <button className='cursor-pointer font-bold bg-blue-400 p-3 rounded-lg mt-4'
+            disabled={uploading}
+            > {uploading? "Uploading...": "Upload"} </button>
         </form>
       </Modal>
     )

@@ -8,9 +8,9 @@ const videoSchema= new mongoose.Schema({
         minlength: [5, "Video Title must be at least 5 character Long"]
     }, 
     publicUrl:{
-        type:String, 
-        required: true, 
-        unique: true,
+        fileId: {type: String, required: true},
+        url: {type: String, required: true},
+        name: {type: String, required: true},
     },
     course: {
         type: mongoose.Schema.Types.ObjectId,

@@ -55,7 +55,7 @@ const uploadToImageKit= async ({videoFile})=>{
     formData.append("fileName", uniqueFileName);
 
     try {
-        const response= await axios.post("https://upload.imagekit.io/api/v2/files/upload",
+        const response= await axios.post("https://upload.imagekit.io/api/v1/files/upload",
             formData, 
             {
                 headers:{
@@ -71,7 +71,6 @@ const uploadToImageKit= async ({videoFile})=>{
                 fileId: response.data.fileId,
                 url: response.data.url,
                 name: response.data.name,
-                thumbnail: response.data.thumbnailUrl
             };
         } else {
             return {

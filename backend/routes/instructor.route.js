@@ -51,7 +51,7 @@ instructorRouter.post("/createcourse",uploadImageMiddleware.single("image"), [
 ], verifyJWT, verifyInstructor, instructorCreateCourseController)
 
 // upload videos
-instructorRouter.post("/uploadvideo",[
+instructorRouter.post("/uploadvideo", uploadMiddleware.single("video"), [
     body("title")
         .notEmpty().withMessage("Video Title is Required")
         .isLength({min: 5}).withMessage("Video Title must be at least 5 character long")
@@ -62,8 +62,7 @@ instructorRouter.post("/uploadvideo",[
     body("order")
         .notEmpty().withMessage("Order is Required")
         .isInt({ min: 1 }).withMessage("Order must be a positive integer"),
-], verifyJWT, verifyInstructor, 
-uploadMiddleware.single("video"), instructorUploadVideoController)
+], verifyJWT, verifyInstructor, instructorUploadVideoController)
 
 // view created course
 instructorRouter.get("/viewcreatedcourse", verifyJWT, verifyInstructor, instructorViewCreatedCourseController)

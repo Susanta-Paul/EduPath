@@ -2,40 +2,28 @@ import { useEffect, useState } from "react"
 import { MdOutlineOndemandVideo } from "react-icons/md";
 import { SiTicktick } from "react-icons/si";
 import VideoModal from "../Components/VideoModal.jsx";
-import {useParams} from "react-router-dom"
+import {useNavigate, useParams} from "react-router-dom"
 import apiRequest from "../Components/ApiRequest.js"
 
 export default function Course({userRole}){
 
     const {courseId}= useParams()
     
-    const [course, setCourse]=useState({
-        description: "This advanced React.js course is designed for experienced React developers seeking to master complex concepts and build highly performant, scalable, and maintainable applications. The curriculum delves beyond foundational principles, focusing on advanced state management, performance optimization, design patterns, testing, and modern tooling.",
-        courseName: "Advanced React.js",
-        duration: {number: "", unit: ""},
-        level:"Advanced",
-        instructors: [{fullname: "Dr. Stang", username: ''},{fullname: "Dr. Smith", username: ''}],
-        image: "https://static-assets.codecademy.com/assets/course-landing-page/meta/16x9/learn-advanced-react.jpg",
-    })
+    const [course, setCourse]=useState({})
     const [isEnroll, setIsEnroll]=useState(false)
-    const [allVideos, setAllVideos]=useState([
-        {id: "7", title: "name", order: 3},
-        {id: "9", title: "name", order: 1},
-        {id: "2", title: "name", order: 2},
-    ])
-    const [enrollment, setEnrollment]=useState({
-        progress: 15,
-        completedVideosIds: ["7"],
-    })
+    const [allVideos, setAllVideos]=useState([])
+    const [enrollment, setEnrollment]=useState({})
 
     const [section, setSection]=useState("syllabus")
 
     const [overallProgrss, setOverallProgrss]=useState(75)
 
+    const navigate=useNavigate()
+
 
     useEffect(()=>{
 
-        async function getCurrentCourseForStudent(params) {
+        async function getCurrentCourseForStudent() {
             try {
                 const response= await apiRequest("get", `/student/viewcourse/${courseId}`)
                 console.log(response.data)
@@ -122,6 +110,10 @@ export default function Course({userRole}){
 
     }
 
+    function videoNavigate(videoId){
+        navigate(`/video/${videoId}`)
+    }
+
 
 
     return (
@@ -158,7 +150,7 @@ export default function Course({userRole}){
                         <h2 className="text-2xl font-bold mt-4 mb-3">Course Outline</h2>
                         <div>
                             {allVideos.map((video, index)=>(
-                                <div key={video.id}
+                                <div key={video.id} onClick={()=>{videoNavigate(video._id)}}
                                 className="flex items-center gap-3 text-2xl cursor-pointer mb-1 hover:bg-white/10 p-3"
                                 >
                                     {isEnroll && enrollment?.completedVideosIds?.includes(video.id) && (
@@ -227,7 +219,7 @@ export default function Course({userRole}){
                     <div className="gap-y-4 mt-4 flex flex-col justify-center items-center text-2xl font-bold md:flex-row md:justify-around">
                         <button onClick={()=>{setIsOpen(true)}} className="cursor-pointer rounded-xl p-4 w-[90%] md:w-[40%]" style={{backgroundColor:"rgba(0, 153, 255, 1)"}}> Add New Video </button>
                         <button className="cursor-pointer rounded-xl p-4 w-[90%] md:w-[40%]" style={{backgroundColor:"rgba(0, 153, 255, 1)"}}> Add New Quiz </button>
-                        <VideoModal modalIsOpen={modalIsOpen} afterOpenModal={()=>{}} closeModal={()=>{setIsOpen(false)}} />
+                        <VideoModal courseId={courseId} order={allVideos.length +1} modalIsOpen={modalIsOpen} afterOpenModal={()=>{}} closeModal={()=>{setIsOpen(false)}} />
                     </div>
                 )
             }
