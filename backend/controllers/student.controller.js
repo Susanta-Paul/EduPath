@@ -74,19 +74,21 @@ export const studentViewCourseController= async (req, res, next)=>{
         // getting all courses videos title and order
         const allCourseVideos= await videoModel.find({course: courseId}).select("title order")
         
+        const allQuizes= await quizModel.find({course: courseId})
         
         if(enrollment){
             return res.status(200).json(
                 {
                     enroll: true, course: course, 
                     allVideos: allCourseVideos,
-                    enrollment
+                    enrollment,
+                    allQuizes
                 }
             )
         }
 
 
-        res.status(200).json({enroll: false, course: course, allVideos: allCourseVideos})
+        res.status(200).json({enroll: false,allQuizes, course: course, allVideos: allCourseVideos})
 
     } catch (error) {
         res.status(500).json({ message: "Server error" });
@@ -103,21 +105,28 @@ export const studentGetVideoController= async (req, res, next)=>{
     try {
         const videoId= req.params.videoId
 
-        const video= await videoModel.findById(videoId)
+        const video= await videoModel.findById(videoId).populate({
+            path: "course",
+            select: "courseName"
+        })
         if(!video){
             return res.status(404).json({message: "No Video Found"})
         }
 
-        const enrollment=await enrollmentModel.findOne({student: req.user._id, course: video.course})
+        const enrollment=await enrollmentModel.findOne({student: req.user._id, course: video.course._id})
         if(!enrollment){
-            return res.status(401).json({message: "You are not Enrolled in this Course"})
+            return res.status(403).json({message: "You are not Enrolled in this Course"})
         }
 
         // Increment views for this video
         video.views += 1;
         await video.save();
 
-        res.status(200).json({video})
+        // get all comments
+
+        const allComments= await commentModel.find({video: videoId})
+
+        res.status(200).json({video, allComments})
 
     } catch (error) {
         res.status(500).json({errors: "Server Error"})

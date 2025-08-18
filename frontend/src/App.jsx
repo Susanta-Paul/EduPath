@@ -13,6 +13,7 @@ import QuizSubmit from './Pages/QuizSubmit.jsx'
 import QuestionCard from './Components/QuestionCard.jsx'
 import Profile from './Pages/Profile.jsx'
 import Video from "./Pages/Video.jsx"
+import QuizCreation from './Pages/QuizCreation.jsx'
 import ProtectedRoute from './ProtectedRoute.jsx'
 import {Route, Routes, BrowserRouter, Navigate} from "react-router-dom"
 
@@ -71,6 +72,7 @@ function App() {
                 <>
                   <Route path="/mycourses" element={<MyCourses />} />
                   <Route path="/createcourse" element={<CreateCourse />} />
+                  <Route path="/createquiz/:courseId" element={<QuizCreation />} />
                 </>
               )}
             </Route>

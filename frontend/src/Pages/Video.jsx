@@ -1,6 +1,7 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import VideoPlayer from "../Components/VideoPlayer";
+import apiRequest from "../Components/ApiRequest";
 
 export default function Video() {
   const { videoId } = useParams();
@@ -32,26 +33,59 @@ export default function Video() {
     },
   ]);
 
+  useEffect(()=>{
+
+    async function getData(){
+        try {
+            const response= await apiRequest("get", `/student/watchvideo/${videoId}`)
+            console.log(response.data)
+
+            setVideo(response.data.video)
+            setAllComments(response.data.allComments)
+
+        } catch (error) {
+            console.error("Some error occur", error)
+        }
+    }
+
+    getData()
+  }, [])
+
   const [newComment, setNewComment] = useState("");
 
-  const handleAddComment = () => {
+  async function handleAddComment(e){
+    e.preventDefault()
+
     if (!newComment.trim()) return;
-    setAllComments([
-      ...allComments,
-      {
-        username: "You",
-        content: newComment,
-        video: videoId,
-        createdAt: "Just now",
-      },
-    ]);
-    setNewComment("");
+
+    const data={
+        videoId: videoId,
+        content: newComment
+    }
+    try {
+        const res= await apiRequest("post", "/student/addcomment", data )
+
+        console.log(res.data)
+        alert("comment added")
+        setAllComments([
+        ...allComments,
+        {
+            username: "You",
+            content: newComment,
+            video: videoId,
+            createdAt: "Just now",
+        },
+        ]);
+        setNewComment("");
+    } catch (error) {
+        console.error("Error Occur", error)
+    }
   };
 
   return (
     <div className="flex flex-col items-center w-full min-h-screen bg-[#121212] text-white p-4">
         {/* Video Player */}
-        <VideoPlayer />
+        <VideoPlayer videoUrl={video.publicUrl.url.slice(0, -8)} />
 
       {/* Video Info */}
       <div className="w-full max-w-4xl mt-4 p-4 bg-[#1e1e1e] shadow rounded-xl">
@@ -75,8 +109,8 @@ export default function Video() {
             className="flex-1 p-2 rounded-lg bg-[#2c2c2c] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
-            onClick={handleAddComment}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            onClick={(e)=>{handleAddComment(e)}}
+            className="px-4 py-2 cursor-pointer bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           >
             Post
           </button>

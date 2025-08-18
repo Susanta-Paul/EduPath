@@ -3,6 +3,7 @@ import courseModel from "../models/course.models.js"
 import {createCourseService, createNewVideoService, createNewQuizService} from "../service/instructor.service.js"
 import videoModel from "../models/video.model.js"
 import enrollmentModel from "../models/enrollment.model.js"
+import quizModel from "../models/quiz.model.js"
 
 
 export const instructorGetCourseController= async (req, res, next)=>{
@@ -24,8 +25,9 @@ export const instructorGetCourseController= async (req, res, next)=>{
         }
 
         const allCourseVideos= await videoModel.find({course: courseId}).select("title order")
+        const allQuizes= await quizModel.find({course: courseId})
 
-        res.status(200).json({enroll: false, message:"Successfully get the course", course, allVideos: allCourseVideos})
+        res.status(200).json({enroll: false, message:"Successfully get the course", course, allVideos: allCourseVideos, allQuizes})
 
     } catch (error) {
         res.status(500).json({errors: error})

@@ -4,6 +4,7 @@ import { SiTicktick } from "react-icons/si";
 import VideoModal from "../Components/VideoModal.jsx";
 import {useNavigate, useParams} from "react-router-dom"
 import apiRequest from "../Components/ApiRequest.js"
+import { SiGoogledocs } from "react-icons/si";
 
 export default function Course({userRole}){
 
@@ -13,6 +14,7 @@ export default function Course({userRole}){
     const [isEnroll, setIsEnroll]=useState(false)
     const [allVideos, setAllVideos]=useState([])
     const [enrollment, setEnrollment]=useState({})
+    const [allQuizzes, setAllQuizzes]=useState([])
 
     const [section, setSection]=useState("syllabus")
 
@@ -28,6 +30,7 @@ export default function Course({userRole}){
                 const response= await apiRequest("get", `/student/viewcourse/${courseId}`)
                 console.log(response.data)
                 setAllVideos(response.data.allVideos)
+                setAllQuizzes(response.data.allQuizes)
                 setCourse(response.data.course)
 
                 if(response.data.enroll){
@@ -49,6 +52,7 @@ export default function Course({userRole}){
                 const response= await apiRequest("get", `/instructor/course/${courseId}`)
                 console.log(response.data)
                 setAllVideos(response.data.allVideos)
+                setAllQuizzes(response.data.allQuizes)
                 setCourse(response.data.course)
                 setIsEnroll(false)
 
@@ -114,6 +118,10 @@ export default function Course({userRole}){
         navigate(`/video/${videoId}`)
     }
 
+    function createquizfxn(videoId){
+        navigate(`/createquiz/${courseId}`)
+    }
+
 
 
     return (
@@ -162,6 +170,23 @@ export default function Course({userRole}){
                                     />
                                     <span>{video.order}</span>
                                     <span>{video.title}</span>
+                                </div>
+                            ))}
+                        </div>
+                        Course Quizzes
+                        <div>
+                            {allQuizzes.map((quiz, idx)=>(
+                                <div key={idx} onClick={()=>{quizNavigate()}}
+                                className="flex items-center gap-3 text-2xl cursor-pointer mb-1 hover:bg-white/10 p-3"
+                                >
+                                    {isEnroll && enrollment?.completedQuizzes?.includes(quiz._id) && (
+                                        <SiTicktick className="text-green-500"/>
+                                    )}
+
+                                    <SiGoogledocs
+                                    className="bg-white/10 rounded-lg"
+                                    />
+                                     <span>Quiz No: {idx+1}</span>
                                 </div>
                             ))}
                         </div>
@@ -218,7 +243,7 @@ export default function Course({userRole}){
                 ):(
                     <div className="gap-y-4 mt-4 flex flex-col justify-center items-center text-2xl font-bold md:flex-row md:justify-around">
                         <button onClick={()=>{setIsOpen(true)}} className="cursor-pointer rounded-xl p-4 w-[90%] md:w-[40%]" style={{backgroundColor:"rgba(0, 153, 255, 1)"}}> Add New Video </button>
-                        <button className="cursor-pointer rounded-xl p-4 w-[90%] md:w-[40%]" style={{backgroundColor:"rgba(0, 153, 255, 1)"}}> Add New Quiz </button>
+                        <button onClick={createquizfxn} className="cursor-pointer rounded-xl p-4 w-[90%] md:w-[40%]" style={{backgroundColor:"rgba(0, 153, 255, 1)"}}> Add New Quiz </button>
                         <VideoModal courseId={courseId} order={allVideos.length +1} modalIsOpen={modalIsOpen} afterOpenModal={()=>{}} closeModal={()=>{setIsOpen(false)}} />
                     </div>
                 )

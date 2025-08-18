@@ -7,7 +7,7 @@ import httpSourceSelector from "videojs-http-source-selector";
 
 videojs.registerPlugin("httpSourceSelector", httpSourceSelector);
 
-export default function VideoPlayer() {
+export default function VideoPlayer({videoUrl}) {
 
   const videoRef = useRef(null);
   const playerRef = useRef(null);
@@ -19,7 +19,7 @@ export default function VideoPlayer() {
     fluid: true,
     playbackRates: [0.25, 0.5, 1, 1.5, 2],
     sources: [{
-      src: "https://ik.imagekit.io/susanta80/1755414045688-14175507_3840_2160_30fps_L-qtvw9kS.mp4/ik-master.m3u8?tr=sr-240_360_480_720_1080",
+      src: `${videoUrl}/ik-master.m3u8?tr=sr-240_360_480_720_1080`,
       type: 'application/x-mpegURL'
     }]
   };
