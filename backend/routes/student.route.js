@@ -3,7 +3,7 @@ import {verifyJWT, verifyStudent} from "../middleware/authMiddleware.js"
 import { studentMakeEnrollmentController ,studentViewEnrollmentController, 
     studentViewCourseController, studentGetVideoController,
     studentMarkVideoController, studentAddCommentController,
-    studentSubmitQuizController
+    studentSubmitQuizController, studentGetQuizController
 } from "../controllers/student.controller.js"
 import {body, param} from "express-validator"
 
@@ -58,6 +58,13 @@ studentRouter.post("/addcomment", [
     .trim(),
 ], verifyJWT, verifyStudent, studentAddCommentController)
 
+// get all quizes
+studentRouter.get("/getquiz/:quizId",[
+    param("quizId")
+        .notEmpty().withMessage("Quizid is required")
+        .isMongoId().withMessage("Invalid quizId format"),
+], verifyJWT, verifyStudent, studentGetQuizController )
+    
 // submit Quiz
 studentRouter.post("/submitquiz/:quizId", [
     param("quizId")

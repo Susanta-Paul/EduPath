@@ -122,6 +122,10 @@ export default function Course({userRole}){
         navigate(`/createquiz/${courseId}`)
     }
 
+    function quizNavigate(quizId){
+        navigate(`/submitquiz/${quizId}`)
+    }
+
 
 
     return (
@@ -176,7 +180,7 @@ export default function Course({userRole}){
                         Course Quizzes
                         <div>
                             {allQuizzes.map((quiz, idx)=>(
-                                <div key={idx} onClick={()=>{quizNavigate()}}
+                                <div key={idx} onClick={()=>{quizNavigate(quiz._id)}}
                                 className="flex items-center gap-3 text-2xl cursor-pointer mb-1 hover:bg-white/10 p-3"
                                 >
                                     {isEnroll && enrollment?.completedQuizzes?.includes(quiz._id) && (

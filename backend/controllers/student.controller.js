@@ -210,6 +210,29 @@ export const studentAddCommentController= async (req, res, next)=>{
 
 }
 
+
+export const studentGetQuizController= async (req, res, next)=>{
+
+    const errors=validationResult(req)
+    if(!errors.isEmpty()){
+        return res.status(400).json({errors: errors.array()})
+    }
+
+    try {
+        const quizId=req.params.quizId
+
+        const quiz= await quizModel.findById(quizId)
+        if(!quiz){
+            return res.status(404).json({message: "No such quiz found"})
+        }
+
+        res.status(200).json({message: `Quiz successfully recieved`, allQuiz: quiz})
+
+    } catch (error) {
+        res.status(500).json({errors: "Server Error"})
+    }
+
+}
 export const studentSubmitQuizController= async (req, res, next)=>{
 
     const errors=validationResult(req)
