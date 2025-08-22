@@ -44,7 +44,7 @@ npm install
 cd ../frontend
 npm install
 ```
-###3. Configure Environment Variables
+### 3. Configure Environment Variables
 ```bash
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
