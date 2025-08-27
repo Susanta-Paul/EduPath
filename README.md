@@ -44,7 +44,7 @@ npm install
 cd ../frontend
 npm install
 ```
-### 3. Configure Environment Variables
+### 3. Configure Environment Variables for Backend
 ```bash
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
@@ -64,7 +64,12 @@ CLOUDINARY_CLOUD_KEY=your_cloudinary_api_key
 CLOUDINARY_CLOUD_SECRET=your_cloudinary_api_secret
 
 ```
-### 4. Run the App
+### 4. Configure Environment Variables for Frontend
+```bash
+VITE_BASE_URL=base_url_of_the_backend_server  ( eg: http://localhost:5000)
+
+```
+### 5. Run the App
 ```bash
 # Start backend
 cd backend
